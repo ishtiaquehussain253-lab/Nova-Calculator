@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nova Calc — Scientific Calculator</title>
+  <meta name="description" content="A premium scientific calculator with beautiful dark UI, supporting trigonometry, logarithms, powers, and more." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="app-wrapper">
+    <header class="app-header">
+      <div class="logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="14" r="13" stroke="url(#grad)" stroke-width="2"/>
+          <path d="M8 14 Q14 6 20 14 Q14 22 8 14Z" fill="url(#grad)" opacity="0.8"/>
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="28" y2="28">
+              <stop offset="0%" stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#06b6d4"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>Nova<strong>Calc</strong></span>
+      </div>
+      <div class="header-actions">
+        <button class="mode-toggle" id="angleToggle" title="Toggle Degrees / Radians">
+          <span id="angleLabel">DEG</span>
+        </button>
+        <button class="icon-btn" id="historyToggle" title="History">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="themeToggle" title="Toggle Theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="themeIcon">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="calc-container">
+      <!-- History Panel -->
+      <aside class="history-panel" id="historyPanel">
+        <div class="history-header">
+          <h2>History</h2>
+          <button class="clear-history" id="clearHistory">Clear All</button>
+        </div>
+        <ul class="history-list" id="historyList">
+          <li class="history-empty">No calculations yet</li>
+        </ul>
+      </aside>
+
+      <!-- Calculator -->
+      <section class="calculator">
+        <!-- Display -->
+        <div class="display-area">
+          <div class="expression-bar" id="expressionBar"></div>
+          <div class="display-main">
+            <div class="result-display" id="resultDisplay">0</div>
+            <div class="cursor-blink" id="cursor"></div>
+          </div>
+          <div class="display-footer">
+            <span class="memory-indicator" id="memIndicator"></span>
+            <span class="error-msg" id="errorMsg"></span>
+          </div>
+        </div>
+
+        <!-- Keyboard -->
+        <div class="keyboard">
+          <!-- Row 0: extra functions -->
+          <div class="key-row row-functions">
+            <button class="key key-fn" data-action="inv" id="invBtn" title="Inverse functions">INV</button>
+            <button class="key key-fn" data-action="sin">sin</button>
+            <button class="key key-fn" data-action="cos">cos</button>
+            <button class="key key-fn" data-action="tan">tan</button>
+            <button class="key key-fn" data-action="pi">π</button>
+            <button class="key key-fn" data-action="e_const">e</button>
+            <button class="key key-fn" data-action="abs">|x|</button>
+          </div>
+
+          <!-- Row 1 -->
+          <div class="key-row">
+            <button class="key key-fn" data-action="log">log</button>
+            <button class="key key-fn" data-action="ln">ln</button>
+            <button class="key key-fn" data-action="sqrt">√</button>
+            <button class="key key-fn" data-action="pow2">x²</button>
+            <button class="key key-fn" data-action="powY">xʸ</button>
+            <button class="key key-fn" data-action="factorial">n!</button>
+            <button class="key key-fn" data-action="percent">%</button>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="key-row">
+            <button class="key key-mem" data-action="mc">MC</button>
+            <button class="key key-mem" data-action="mr">MR</button>
+            <button class="key key-mem" data-action="ms">MS</button>
+            <button class="key key-mem" data-action="mplus">M+</button>
+            <button class="key key-mem" data-action="mminus">M−</button>
+            <button class="key key-action" data-action="backspace" id="backspaceBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/>
+              </svg>
+            </button>
+            <button class="key key-clear" data-action="clear">AC</button>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="key-row">
+            <button class="key key-paren" data-action="lparen">(</button>
+            <button class="key key-paren" data-action="rparen">)</button>
+            <button class="key" data-action="7">7</button>
+            <button class="key" data-action="8">8</button>
+            <button class="key" data-action="9">9</button>
+            <button class="key key-op" data-action="div">÷</button>
+            <button class="key key-op" data-action="mod">mod</button>
+          </div>
+
+          <!-- Row 4 -->
+          <div class="key-row">
+            <button class="key key-fn" data-action="cbrt">∛</button>
+            <button class="key key-fn" data-action="nthroot">ʸ√x</button>
+            <button class="key" data-action="4">4</button>
+            <button class="key" data-action="5">5</button>
+            <button class="key" data-action="6">6</button>
+            <button class="key key-op" data-action="mul">×</button>
+            <button class="key key-op" data-action="reciprocal">1/x</button>
+          </div>
+
+          <!-- Row 5 -->
+          <div class="key-row">
+            <button class="key key-fn" data-action="exp10">10ˣ</button>
+            <button class="key key-fn" data-action="expe">eˣ</button>
+            <button class="key" data-action="1">1</button>
+            <button class="key" data-action="2">2</button>
+            <button class="key" data-action="3">3</button>
+            <button class="key key-op" data-action="sub">−</button>
+            <button class="key key-equals" data-action="equals" rowspan="2">=</button>
+          </div>
+
+          <!-- Row 6 -->
+          <div class="key-row">
+            <button class="key key-fn" data-action="sign">±</button>
+            <button class="key key-fn" data-action="floor">⌊x⌋</button>
+            <button class="key number-zero" data-action="0">0</button>
+            <button class="key" data-action="dot">.</button>
+            <button class="key key-fn" data-action="EE">EE</button>
+            <button class="key key-op" data-action="add">+</button>
+            <button class="key key-equals" data-action="equals">=</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="calc.js"></script>
+</body>
+</html>
